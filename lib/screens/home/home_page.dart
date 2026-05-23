@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../treatment/treatment_detail_page.dart';
 import 'search_page.dart';
+import 'notification_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -9,6 +10,26 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationPage(),
+                ),
+              );
+            },
+
+            icon: const Icon(Icons.notifications, color: Colors.black),
+          ),
+        ],
+      ),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -19,6 +40,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
+                /// SEARCH BAR
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -29,7 +51,6 @@ class HomePage extends StatelessWidget {
                     );
                   },
 
-                  /// SEARCH BAR
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
 
@@ -57,7 +78,7 @@ class HomePage extends StatelessWidget {
 
                 /// TITLE
                 const Text(
-                  'Beauty Link',
+                  'Beauty Clinic',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
 
@@ -100,11 +121,56 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
 
                   children: [
-                    categoryItem(Icons.face, 'Facial'),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TreatmentDetailPage(
+                              title: 'Facial Treatment',
+                              description:
+                                  'Perawatan facial untuk membersihkan dan menyehatkan kulit wajah.',
+                            ),
+                          ),
+                        );
+                      },
 
-                    categoryItem(Icons.spa, 'Therapy'),
+                      child: categoryItem(Icons.face, 'Facial'),
+                    ),
 
-                    categoryItem(Icons.auto_awesome, 'Glow'),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TreatmentDetailPage(
+                              title: 'Therapy Treatment',
+                              description:
+                                  'Therapy treatment membantu relaksasi dan kesehatan kulit.',
+                            ),
+                          ),
+                        );
+                      },
+
+                      child: categoryItem(Icons.spa, 'Therapy'),
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TreatmentDetailPage(
+                              title: 'Glow Treatment',
+                              description:
+                                  'Glow treatment membantu wajah tampak lebih cerah dan glowing.',
+                            ),
+                          ),
+                        );
+                      },
+
+                      child: categoryItem(Icons.auto_awesome, 'Glow'),
+                    ),
                   ],
                 ),
 
@@ -118,6 +184,7 @@ class HomePage extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
+                /// TREATMENT CARD
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -152,8 +219,8 @@ class HomePage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(18),
 
-          decoration: BoxDecoration(
-            color: const Color(0xFFF5F0E1),
+          decoration: const BoxDecoration(
+            color: Color(0xFFF5F0E1),
             shape: BoxShape.circle,
           ),
 
@@ -200,6 +267,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Text(
                   title,
+
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
