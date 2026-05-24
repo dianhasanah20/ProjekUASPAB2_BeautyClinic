@@ -1,95 +1,100 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final String name;
+  final String email;
+  final Uint8List? image;
+
+  const EditProfilePage({
+    super.key,
+    required this.name,
+    required this.email,
+    this.image,
+  });
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController nameController = TextEditingController(
-    text: 'Leonica User',
-  );
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  Uint8List? _image;
 
-  final TextEditingController emailController = TextEditingController(
-    text: 'user@gmail.com',
-  );
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.name);
+    emailController = TextEditingController(text: widget.email);
+    _image = widget.image;
+  }
+
+  Future<void> pickImage() async {
+    final picked =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
+      final bytes = await picked.readAsBytes();
+      setState(() {
+        _image = bytes;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Profile')),
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
-
-            const CircleAvatar(
-              radius: 55,
-              backgroundColor: Colors.amber,
-
-              child: Icon(Icons.person, size: 60, color: Colors.white),
-            ),
-
-            const SizedBox(height: 40),
-
-            TextField(
-              controller: nameController,
-
-              decoration: InputDecoration(
-                labelText: 'Nama',
-
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
+            // FOTO (BISA DIKLIK)
+            GestureDetector(
+              onTap: pickImage,
+              child: CircleAvatar(
+                radius: 55,
+                backgroundColor: Colors.amber,
+                backgroundImage:
+                    _image != null ? MemoryImage(_image!) : null,
+                child: _image == null
+                    ? const Icon(Icons.person,
+                        size: 60, color: Colors.white)
+                    : null,
               ),
             ),
 
             const SizedBox(height: 20),
 
-            TextField(
-              controller: emailController,
-
-              decoration: InputDecoration(
-                labelText: 'Email',
-
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: "Nama"),
               ),
             ),
 
-            const SizedBox(height: 40),
-
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile berhasil diperbarui'),
-                    ),
-                  );
-                },
-
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-
-                child: const Text(
-                  'Simpan',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: "Email"),
               ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, {
+                  'name': nameController.text,
+                  'email': emailController.text,
+                  'image': _image,
+                });
+              },
+              child: const Text("Simpan"),
             ),
           ],
         ),
